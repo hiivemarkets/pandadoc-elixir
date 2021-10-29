@@ -6,7 +6,7 @@ defmodule Pandadoc.Documents do
   ## Examples
 
       client = Pandadoc.Client("thisismykeycreatedinpandadoc")
-      {:ok, result, _env} = Okta.Users.list_users(client)
+      {:ok, result, _env} = Pandadoc.Documents.list_documents(client)
   """
 
   @documents_url "/documents"
