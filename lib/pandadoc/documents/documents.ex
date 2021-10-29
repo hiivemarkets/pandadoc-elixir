@@ -20,8 +20,18 @@ defmodule Pandadoc.Documents do
 
   https://developers.pandadoc.com/reference/new-document#create-document-from-pandadoc-template
   """
-  @spec create_document_from_template(Pandadoc.client(), String.t(), String.t(), CreateFromTemplate.t()) :: Pandadoc.result()
-  def create_document_from_template(client, name, template_uuid, %CreateFromTemplate{} = opts \\ %CreateFromTemplate{}) do
+  @spec create_document_from_template(
+          Pandadoc.client(),
+          String.t(),
+          String.t(),
+          CreateFromTemplate.t()
+        ) :: Pandadoc.result()
+  def create_document_from_template(
+        client,
+        name,
+        template_uuid,
+        %CreateFromTemplate{} = opts \\ %CreateFromTemplate{}
+      ) do
     body =
       opts
       |> stringify_keys()
@@ -36,8 +46,14 @@ defmodule Pandadoc.Documents do
 
   https://developers.pandadoc.com/reference/new-document#create-document-from-pdf
   """
-  @spec create_document_from_pdf(Pandadoc.client(), binary(), String.t(), CreateFromPDF.t()) :: Pandadoc.result()
-  def create_document_from_pdf(client, name, pdf, %CreateFromPDF{} = opts \\ %CreateFromPDF{parse_form_fields: false}) do
+  @spec create_document_from_pdf(Pandadoc.client(), binary(), String.t(), CreateFromPDF.t()) ::
+          Pandadoc.result()
+  def create_document_from_pdf(
+        client,
+        name,
+        pdf,
+        %CreateFromPDF{} = opts \\ %CreateFromPDF{parse_form_fields: false}
+      ) do
     data =
       opts
       |> stringify_keys()
@@ -47,9 +63,7 @@ defmodule Pandadoc.Documents do
       Multipart.new()
       |> Multipart.add_content_type_param("charset=utf-8")
       |> Multipart.add_field("data", data)
-      |> Multipart.add_file_content(pdf, name,
-        headers: [{"content-type", "application/pdf"}]
-      )
+      |> Multipart.add_file_content(pdf, name, headers: [{"content-type", "application/pdf"}])
 
     Tesla.post(client, @documents_url, mp)
     |> Pandadoc.result()
@@ -60,8 +74,14 @@ defmodule Pandadoc.Documents do
 
   https://developers.pandadoc.com/reference/new-document#create-document-from-pdf
   """
-  @spec create_document_from_url(Pandadoc.client(), binary(), String.t(), CreateFromPDF.t()) :: Pandadoc.result()
-  def create_document_from_url(client, name, url, %CreateFromPDF{} = opts \\ %CreateFromPDF{parse_form_fields: false}) do
+  @spec create_document_from_url(Pandadoc.client(), binary(), String.t(), CreateFromPDF.t()) ::
+          Pandadoc.result()
+  def create_document_from_url(
+        client,
+        name,
+        url,
+        %CreateFromPDF{} = opts \\ %CreateFromPDF{parse_form_fields: false}
+      ) do
     data =
       opts
       |> stringify_keys()
@@ -71,14 +91,11 @@ defmodule Pandadoc.Documents do
       Multipart.new()
       |> Multipart.add_content_type_param("charset=utf-8")
       |> Multipart.add_field("data", data)
-      |> Multipart.add_file_content("", name,
-        headers: [{"content-type", "application/pdf"}]
-      )
+      |> Multipart.add_file_content("", name, headers: [{"content-type", "application/pdf"}])
 
     Tesla.post(client, @documents_url, mp)
     |> Pandadoc.result()
   end
-
 
   @doc """
 
@@ -123,6 +140,7 @@ defmodule Pandadoc.Documents do
   @spec send_document(Pandadoc.client(), String.t(), keyword()) :: Pandadoc.result()
   def send_document(client, doc_id, opts \\ [silent: true]) do
     body = opts |> Enum.into(%{}) |> stringify_keys()
+
     Tesla.post(client, @documents_url <> "/#{doc_id}/send", body)
     |> Pandadoc.result()
   end
@@ -135,6 +153,7 @@ defmodule Pandadoc.Documents do
   @spec share_document(Pandadoc.client(), String.t(), String.t(), keyword()) :: Pandadoc.result()
   def share_document(client, doc_id, recipient, opts \\ []) do
     body = opts |> Enum.into(%{recipient: recipient}) |> stringify_keys()
+
     Tesla.post(client, @documents_url <> "/#{doc_id}/session", body)
     |> Pandadoc.result()
   end
@@ -171,5 +190,4 @@ defmodule Pandadoc.Documents do
     Tesla.delete(client, @documents_url <> "/#{doc_id}")
     |> Pandadoc.result()
   end
-
 end
