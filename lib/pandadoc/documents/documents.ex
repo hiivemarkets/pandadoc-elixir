@@ -123,6 +123,24 @@ defmodule Pandadoc.Documents do
   end
 
   @doc """
+  Change Document Status (manually)
+
+  Document Statuses:
+
+  2: document.completed
+  10: document.paid (important: connected payment app required)
+  11: document.voided (expired)
+  12: document.declined
+
+  https://developers.pandadoc.com/reference/change-document-status-manually
+  """
+  @spec change_document_status(Pandadoc.client(), String.t(), valid_document_statuses())) :: Pandadoc.result()
+  def change_document_status(client, doc_id, status) do
+    Tesla.patch(client, @documents_url <> "/#{doc_id}", %{"status" => status})
+    |> Pandadoc.result()
+  end
+
+  @doc """
   Return detailed data about a document
   https://developers.pandadoc.com/reference/document-details
   """
