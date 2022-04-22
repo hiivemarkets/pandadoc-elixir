@@ -15,6 +15,8 @@ defmodule Pandadoc.Documents do
   alias Tesla.Multipart
   import Pandadoc.Utils
 
+  @type valid_document_statuses() :: 2 | 10 | 11 | 12
+
   @doc """
   Create document from Template
 
