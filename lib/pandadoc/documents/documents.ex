@@ -15,6 +15,8 @@ defmodule Pandadoc.Documents do
   alias Tesla.Multipart
   import Pandadoc.Utils
 
+  @type valid_document_statuses() :: 2 | 10 | 11 | 12
+
   @doc """
   Create document from Template
 
@@ -119,6 +121,24 @@ defmodule Pandadoc.Documents do
   @spec document_status(Pandadoc.client(), String.t()) :: Pandadoc.result()
   def document_status(client, doc_id) do
     Tesla.get(client, @documents_url <> "/#{doc_id}")
+    |> Pandadoc.result()
+  end
+
+  @doc """
+  Change Document Status (manually)
+
+  Document Statuses:
+
+  2: document.completed
+  10: document.paid (important: connected payment app required)
+  11: document.voided (expired)
+  12: document.declined
+
+  https://developers.pandadoc.com/reference/change-document-status-manually
+  """
+  @spec change_document_status(Pandadoc.client(), String.t(), valid_document_statuses())) :: Pandadoc.result()
+  def change_document_status(client, doc_id, status) do
+    Tesla.patch(client, @documents_url <> "/#{doc_id}", %{"status" => status})
     |> Pandadoc.result()
   end
 
