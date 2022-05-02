@@ -138,7 +138,7 @@ defmodule Pandadoc.Documents do
   """
   @spec change_document_status(Pandadoc.client(), String.t(), valid_document_statuses()) :: Pandadoc.result()
   def change_document_status(client, doc_id, status) do
-    Tesla.patch(client, @documents_url <> "/#{doc_id}", %{"status" => status})
+    Tesla.patch(client, @documents_url <> "/#{doc_id}/status/", %{"status" => status})
     |> Pandadoc.result()
   end
 
