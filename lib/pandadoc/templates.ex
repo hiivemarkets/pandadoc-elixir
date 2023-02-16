@@ -1,6 +1,6 @@
 defmodule Pandadoc.Templates do
   @moduledoc """
-  The `Pandadoc.Templates` module provides access methods to the
+  The `Pandadoc.Templates` module provides access methods to the `templates` API endpoint.
   All methods require a Tesla Client struct created with `Pandadoc.client(api_key)`.
 
   ## Examples
