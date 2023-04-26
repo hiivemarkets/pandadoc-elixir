@@ -31,8 +31,10 @@ defmodule Pandadoc do
   @type client() :: Tesla.Client.t()
   @type result() :: {:ok, map() | String.t(), Tesla.Env.t()} | {:error, map(), any}
 
+  @pandadoc_url "https://api.pandadoc.com/public/v1"
+
   @spec client(String.t(), String.t()) :: client()
-  def client(api_key, base_url \\ "https://api.pandadoc.com/public/v1") do
+  def client(api_key, base_url \\ @pandadoc_url) do
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON,
