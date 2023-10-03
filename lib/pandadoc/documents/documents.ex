@@ -1,6 +1,6 @@
 defmodule Pandadoc.Documents do
   @moduledoc """
-  The `Pandadoc.Documents` module provides access methods to the
+  The `Pandadoc.Documents` module provides methods for managing documents
   All methods require a Tesla Client struct created with `Pandadoc.client(api_key)`.
 
   ## Examples
@@ -16,6 +16,10 @@ defmodule Pandadoc.Documents do
   import Pandadoc.Utils
 
   @type valid_document_statuses() :: 2 | 10 | 11 | 12
+
+  @type change_signer_attrs :: %{
+          id: String.t()
+        }
 
   @doc """
   Create document from Template
@@ -136,7 +140,8 @@ defmodule Pandadoc.Documents do
 
   https://developers.pandadoc.com/reference/change-document-status-manually
   """
-  @spec change_document_status(Pandadoc.client(), String.t(), valid_document_statuses()) :: Pandadoc.result()
+  @spec change_document_status(Pandadoc.client(), String.t(), valid_document_statuses()) ::
+          Pandadoc.result()
   def change_document_status(client, doc_id, status) do
     Tesla.patch(client, @documents_url <> "/#{doc_id}/status/", %{"status" => status})
     |> Pandadoc.result()
@@ -208,6 +213,24 @@ defmodule Pandadoc.Documents do
   @spec delete_document(Pandadoc.client(), String.t()) :: Pandadoc.result()
   def delete_document(client, doc_id) do
     Tesla.delete(client, @documents_url <> "/#{doc_id}")
+    |> Pandadoc.result()
+  end
+
+  @doc """
+  Change a document's primary signer
+
+  https://developers.pandadoc.com/reference/change-signer
+  """
+  @spec change_signer(Pandadoc.client(), String.t(), String.t(), change_signer_attrs()) ::
+          Pandadoc.result()
+  def change_signer(client, document_id, recipient_id, attrs) do
+    Map.merge(attrs, %{"kind" => "contact"})
+
+    Tesla.post(
+      client,
+      @documents_url <> "/#{document_id}/recipients/#{recipient_id}/reassign",
+      attrs
+    )
     |> Pandadoc.result()
   end
 end
