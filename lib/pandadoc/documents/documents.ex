@@ -17,10 +17,6 @@ defmodule Pandadoc.Documents do
 
   @type valid_document_statuses() :: 2 | 10 | 11 | 12
 
-  @type change_signer_attrs :: %{
-          id: String.t()
-        }
-
   @doc """
   Create document from Template
 
@@ -221,15 +217,39 @@ defmodule Pandadoc.Documents do
 
   https://developers.pandadoc.com/reference/change-signer
   """
-  @spec change_signer(Pandadoc.client(), String.t(), String.t(), change_signer_attrs()) ::
+  @spec change_signer(Pandadoc.client(), String.t(), String.t(), String.t()) ::
           Pandadoc.result()
-  def change_signer(client, document_id, recipient_id, attrs) do
-    Map.merge(attrs, %{"kind" => "contact"})
+  def change_signer(client, document_id, recipient_id, contact_id) do
+    body = %{
+      "kind" => "contact",
+      "id" => contact_id
+    }
 
     Tesla.post(
       client,
       @documents_url <> "/#{document_id}/recipients/#{recipient_id}/reassign",
-      attrs
+      body
+    )
+    |> Pandadoc.result()
+  end
+
+  @doc """
+  Add a cc recipient to a document
+
+  https://developers.pandadoc.com/reference/add-cc-recipient
+  """
+  @spec add_cc_recipient(Pandadoc.client(), String.t(), String.t()) ::
+          Pandadoc.result()
+  def add_cc_recipient(client, document_id, contact_id) do
+    body = %{
+      "kind" => "contact",
+      "id" => contact_id
+    }
+
+    Tesla.post(
+      client,
+      @documents_url <> "/#{document_id}/recipients/",
+      body
     )
     |> Pandadoc.result()
   end
