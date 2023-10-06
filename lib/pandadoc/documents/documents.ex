@@ -39,7 +39,8 @@ defmodule Pandadoc.Documents do
       |> stringify_keys()
       |> Map.merge(%{"name" => name, "template_uuid" => template_uuid})
 
-    Tesla.post(client, @documents_url, body)
+    client
+    |> Tesla.post(@documents_url, body)
     |> Pandadoc.result()
   end
 
@@ -67,7 +68,8 @@ defmodule Pandadoc.Documents do
       |> Multipart.add_field("data", data)
       |> Multipart.add_file_content(pdf, name, headers: [{"content-type", "application/pdf"}])
 
-    Tesla.post(client, @documents_url, mp)
+    client
+    |> Tesla.post(@documents_url, mp)
     |> Pandadoc.result()
   end
 
@@ -95,7 +97,8 @@ defmodule Pandadoc.Documents do
       |> Multipart.add_field("data", data)
       |> Multipart.add_file_content("", name, headers: [{"content-type", "application/pdf"}])
 
-    Tesla.post(client, @documents_url, mp)
+    client
+    |> Tesla.post(@documents_url, mp)
     |> Pandadoc.result()
   end
 
@@ -120,7 +123,8 @@ defmodule Pandadoc.Documents do
   """
   @spec document_status(Pandadoc.client(), String.t()) :: Pandadoc.result()
   def document_status(client, doc_id) do
-    Tesla.get(client, @documents_url <> "/#{doc_id}")
+    client
+    |> Tesla.get(@documents_url <> "/#{doc_id}")
     |> Pandadoc.result()
   end
 
@@ -139,7 +143,8 @@ defmodule Pandadoc.Documents do
   @spec change_document_status(Pandadoc.client(), String.t(), valid_document_statuses()) ::
           Pandadoc.result()
   def change_document_status(client, doc_id, status) do
-    Tesla.patch(client, @documents_url <> "/#{doc_id}/status/", %{"status" => status})
+    client
+    |> Tesla.patch(@documents_url <> "/#{doc_id}/status/", %{"status" => status})
     |> Pandadoc.result()
   end
 
@@ -149,7 +154,8 @@ defmodule Pandadoc.Documents do
   """
   @spec document_details(Pandadoc.client(), String.t()) :: Pandadoc.result()
   def document_details(client, doc_id) do
-    Tesla.get(client, @documents_url <> "/#{doc_id}/details")
+    client
+    |> Tesla.get(@documents_url <> "/#{doc_id}/details")
     |> Pandadoc.result()
   end
 
@@ -162,7 +168,8 @@ defmodule Pandadoc.Documents do
   def send_document(client, doc_id, opts \\ [silent: true]) do
     body = opts |> Enum.into(%{}) |> stringify_keys()
 
-    Tesla.post(client, @documents_url <> "/#{doc_id}/send", body)
+    client
+    |> Tesla.post(@documents_url <> "/#{doc_id}/send", body)
     |> Pandadoc.result()
   end
 
@@ -175,7 +182,8 @@ defmodule Pandadoc.Documents do
   def share_document(client, doc_id, recipient, opts \\ []) do
     body = opts |> Enum.into(%{recipient: recipient}) |> stringify_keys()
 
-    Tesla.post(client, @documents_url <> "/#{doc_id}/session", body)
+    client
+    |> Tesla.post(@documents_url <> "/#{doc_id}/session", body)
     |> Pandadoc.result()
   end
 
@@ -186,7 +194,8 @@ defmodule Pandadoc.Documents do
   """
   @spec download_document(Pandadoc.client(), String.t(), keyword()) :: Pandadoc.result()
   def download_document(client, doc_id, opts \\ []) do
-    Tesla.get(client, @documents_url <> "/#{doc_id}/download", query: opts)
+    client
+    |> Tesla.get(@documents_url <> "/#{doc_id}/download", query: opts)
     |> Pandadoc.result()
   end
 
@@ -197,7 +206,8 @@ defmodule Pandadoc.Documents do
   """
   @spec download_protected_document(Pandadoc.client(), String.t(), keyword()) :: Pandadoc.result()
   def download_protected_document(client, doc_id, opts \\ []) do
-    Tesla.get(client, @documents_url <> "/#{doc_id}/download-protected", query: opts)
+    client
+    |> Tesla.get(@documents_url <> "/#{doc_id}/download-protected", query: opts)
     |> Pandadoc.result()
   end
 
@@ -208,7 +218,8 @@ defmodule Pandadoc.Documents do
   """
   @spec delete_document(Pandadoc.client(), String.t()) :: Pandadoc.result()
   def delete_document(client, doc_id) do
-    Tesla.delete(client, @documents_url <> "/#{doc_id}")
+    client
+    |> Tesla.delete(@documents_url <> "/#{doc_id}")
     |> Pandadoc.result()
   end
 
@@ -225,8 +236,8 @@ defmodule Pandadoc.Documents do
       "id" => contact_id
     }
 
-    Tesla.post(
-      client,
+    client
+    |> Tesla.post(
       @documents_url <> "/#{document_id}/recipients/#{recipient_id}/reassign",
       body
     )
@@ -246,8 +257,8 @@ defmodule Pandadoc.Documents do
       "id" => contact_id
     }
 
-    Tesla.post(
-      client,
+    client
+    |> Tesla.post(
       @documents_url <> "/#{document_id}/recipients/",
       body
     )

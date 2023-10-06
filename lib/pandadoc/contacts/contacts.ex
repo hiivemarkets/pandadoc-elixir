@@ -31,11 +31,9 @@ defmodule Pandadoc.Contacts do
   """
   @spec create_contact(Pandadoc.client(), create_contact_attrs()) ::
           Pandadoc.result()
-  def create_contact(
-        client,
-        attrs
-      ) do
-    Tesla.post(client, @contacts_url, attrs)
+  def create_contact(client, attrs) do
+    client
+    |> Tesla.post(@contacts_url, attrs)
     |> Pandadoc.result()
   end
 end
