@@ -4,9 +4,8 @@ defmodule Pandadoc.Templates do
   All methods require a Tesla Client struct created with `Pandadoc.client(api_key)`.
 
   ## Examples
-
-      client = Pandadoc.Client("thisismykeycreatedinpandadoc")
-      {:ok, result, _env} = Pandadoc.Templates.template_details(client, "template_id")
+  client = Pandadoc.Client("thisismykeycreatedinpandadoc")
+  {:ok, result, _env} = Pandadoc.Templates.template_details(client, "template_id")
   """
 
   @templates_url "/templates"
@@ -18,7 +17,8 @@ defmodule Pandadoc.Templates do
   """
   @spec template_details(Pandadoc.client(), String.t()) :: Pandadoc.result()
   def template_details(client, template_id) do
-    Tesla.get(client, @templates_url <> "/#{template_id}/details")
+    client
+    |> Tesla.get(@templates_url <> "/#{template_id}/details")
     |> Pandadoc.result()
   end
 end
